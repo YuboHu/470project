@@ -1,0 +1,38 @@
+from django import forms
+from events.models import Events
+from django.forms.widgets import DateTimeInput, TextInput
+
+class EventsForm(forms.Form):
+    	title = forms.CharField(max_length=300)
+	#location = models.CharField(max_length=300)
+	#endtime=models.DateTimeField('End time')
+	#location= models.CharField(max_length=300)
+	brief_intro= forms.CharField(widget=TextInput)
+	poster=forms.ImageField(required=False)
+	organizer= forms.CharField(max_length=200)
+	contact_email= forms.EmailField(max_length=254)
+	contact_phonenumber= forms.CharField(max_length=20)
+	capacity= forms.IntegerField()
+	age_limit= forms.IntegerField()
+	ticket=forms.URLField()
+	description=forms.CharField(widget=TextInput)
+	
+	#EventsTime
+	starttime= forms.DateTimeField(widget=DateTimeInput)
+	endtime=forms.DateTimeField(widget=DateTimeInput)
+
+	#EventsCategory
+	
+	music=forms.BooleanField(required=False)
+	sports=forms.BooleanField(required=False)
+	food=forms.BooleanField(required=False)
+	party=forms.BooleanField(required=False)
+	arts=forms.BooleanField(required=False)
+	business=forms.BooleanField(required=False)
+
+	#EventsLocation
+	location= forms.CharField(max_length=300)
+
+	#EventsPubdate
+	#pubdate= forms.DateTimeField('Date published',null=True)
+

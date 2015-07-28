@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Activity Detail</title>
+    </head>
+
+    <body>
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+        {% if is_engage_ %}
+        <form action="{% url 'events:dis_engage' event1.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="DisEngage" />
+        </form>
+        {% else %}
+        <form action="{% url 'events:engage' event1.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Engage" />
+        </form>
+        {% endif %}
+
+        {% if is_favorite_ %}
+        <form action="{% url 'events:dis_favorite' event1.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="DisFavorite" />
+        </form>
+        {% else %}
+        <form action="{% url 'events:favorite' event1.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Favorite" />
+        </form>
+        {% endif %}     
+
+        <p>{{ event1.title }}</p>
+        <p>{{ event1.brief_intro }}</p>
+	{%if event1.poster%}
+        <img src="{{ event1.poster.url }}" height="100" width="100">
+	{%endif%}
+        <p>{{ event1.organizer }}</p>
+        <p>{{ event1.contact_email }}</p>
+        <p>{{ event1.contact_phonenumber }}</p>
+        <p>{{ event1.capacity }}</p>
+        <p>{{ event1.age_limit }}</p>
+        <p>{{ event1.ticket }}</p>
+        <p>{{ event1.description }}</p>
+
+        <p>{{ event1.starttime }}</p>
+        <p>{{ event1.endtime }}</p>
+
+        <p>{{ event1.music }}</p>
+        <p>{{ event1.sports }}</p>
+        <p>{{ event1.food }}</p>
+        <p>{{ event1.party }}</p>
+        <p>{{ event1.arts }}</p>
+        <p>{{ event1.business }}</p>
+
+        <p>{{ event1.location }}</p>
+
+        <p>{{ event1.pubdate }}</p>
+
+        <p>{{ event1.user.username }}</p>
+
+        {% if person_list_ %}
+        <ul>
+        {% for person in person_list_ %}
+        <li>{{ person.username }}</li>
+        {% endfor %}
+        </ul>
+        {% else %}
+        <p>Nobody.</p>
+        {% endif %}
+
+    </body>
+</html>

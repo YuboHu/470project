@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Is anyone getting tired of repeatedly entering the header over and over?? -->
+        <title>Rango</title>
+    </head>
+
+    <body>
+        <h1>Register with Rango</h1>
+	{% if user.is_authenticated %}
+        {% if posted %}
+        Rango says: <strong>Posted!</strong>
+        <a href="/events/post">Return to the homepage.</a><br />
+        {% else %}
+        Rango says: <strong>post here!</strong><br />
+
+        <form id="post_form" method="post" action="{% url 'events:post' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+	    {{events_form.as_p}}
+	    {{eventstime_form.as_p}}
+	    {{eventscategory_form.as_p}}
+	    {{eventslocation_form.as_p}}
+            
+            <input type="submit" value="submit" />
+        </form>
+	{%endif%}
+	{%endif%}
+
+    </body>
+</html>
