@@ -83,9 +83,9 @@ WSGI_APPLICATION = 'activity.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'final',
-        'USER': 'group6',
-        'PASSWORD': 'mx6',
+        'NAME': 'activity',
+        'USER': 'root',
+        'PASSWORD': '[Spirix]',
         'HOST': 'localhost',
         'PORT': '3306',
     }
