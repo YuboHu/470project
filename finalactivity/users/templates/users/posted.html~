@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+    {% load staticfiles %}
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Posted Activities</title>
+
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap-theme.min.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "css/blog.css" %}">
+
+
+    <link rel="stylesheet" type="text/css" href="{% static "css/datepicker.css" %}">
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="http://cmpt470.csil.sfu.ca:8006/~bichengx/static/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript"  src="http://cmpt470.csil.sfu.ca:8006/~bichengx/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+            <script type="text/javascript">
+            // When the document is ready
+            $(document).ready(function () {
+                
+                $('#birthday').datepicker({
+                    format: "yyyy-mm-dd"
+                });  
+            
+            });
+        </script>
+    <script type="text/javascript">
+   
+    </script>
+    <body>
+
+    {% if user.is_authenticated %}
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+      <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'users:index' %}">QuickActivity</a>
+    <a class="navbar-brand" href="{% url 'search:topsearch' %}">Events</a>
+    <a class="navbar-brand" href="{% url 'events:post' %}">Post</a>
+    <a class="navbar-brand" href="{% url 'aboutus:aboutus' %}">About us</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+  {% if user.is_authenticated %}
+  <div>
+  <a class="navbar-right navbar-brand" href="{% url 'users:logout' %}">Logout</a>
+  <a class="navbar-right navbar-brand" href="{% url 'users:homepage' %}">Homepage</a>
+  <a class="navbar-right navbar-brand" href="{% url 'users:homepage' %}">Hi, {{user.username}}!</a>
+  </div>
+  {% else %}
+          <form class="navbar-form navbar-right" id="login_form" method="post" action="{% url 'users:login' %}" >
+  {% csrf_token %}
+            <div class="form-group">
+              <input placeholder="Username" name="username" class="form-control" type="text" required="required">
+            </div>
+            <div class="form-group">
+              <input placeholder="Password" name="password" class="form-control" type="password" required="required">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Register</button>
+          </form>
+  {% endif %}
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Register Now!</h4>
+      </div>
+      <div class="modal-body">
+        {% if messages %}
+          <div class="messages">
+          {% for message in messages %}
+          {% if message.tags == 'info' %}
+          <div class="alert alert-info" role="alert">{{ message }}</div>
+          {% endif %}
+          {% endfor %}
+          </div>
+        {% endif %}
+        <form id="user_form" method="post" action="{% url 'users:regist' %}" enctype="multipart/form-data">
+  {% csrf_token %}
+          <div class="form-group">
+            <label  class="control-label"><span>*</span>Username:</label>
+            <input type="text" name="username" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Email Address:</label>
+            <input type="email" name="email" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Password:</label>
+            <input type="password" name="password" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Confirm password:</label>
+            <input type="password" name="confirm_password" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Birthday:</label>
+            <input type="date" id="birthday" name="birthday" class="form-control" placeholder="mm/dd/yyyy or yyyy-mm-dd"size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label">Do you want to make your username public:</label>
+            <input type="checkbox" name="make_public_your_user_name" class="form-control">
+          </div>
+  <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Register</button>
+      </div>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+    <div class="container" style="margin-top: 60px;">
+        <div class="row">
+            <div class="col-md-3 blog-sidebar" align="left">
+                <ul class="nav nav-pills nav-stacked">
+                <li role="presentation"><a href="{% url 'users:homepage' %}" >Homepage</a></li>
+                <li role="presentation"><a href="{% url 'users:detail' %}">Profile</a></li>
+                <li role="presentation"><a href="{% url 'users:chapass' %}">Change Password</a></li>
+                <li role="presentation" class="active"><a href="{% url 'users:posted' %}">Posted Activities</a></li>
+                <li role="presentation"><a href="{% url 'users:engaged' %}">Joined Activities</a></li>
+                <li role="presentation"><a href="{% url 'users:favorite' %}">Favorite Activities</a></li>
+
+                </ul>
+            </div> 
+
+            <div class="col-md-9 blog-main">
+                
+            {% if events_list %}
+                {% for events in events_list %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <a href="{% url 'events:detail' events.id %}" style="text-align:left">{{ events.title }}</a>
+                        
+                    </h3>
+                    </div>
+                    <div class="panel-body">
+                      <div class="col-md-4" align="left">
+                        {%if events.poster %}
+                         <img src="/final/{{ events.poster.url }}" height="160" width="180">
+                        {%endif%}
+                        <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-default" onclick="location='{% url 'events:edit' events.id %}'">Edit</button>
+                        <button type="button" class="btn btn-default" onclick="location='{% url 'users:showcsv' events.id %}'">Participants</button>
+                        </div>
+
+                        <!--center><p style="text-align:justify;text-justify:inter-ideograph;">
+                            <a href="{% url 'events:edit' events.id %}">Edit</a>
+                            <a href="{% url 'users:showcsv' events.id %}">Participants List</a>
+                        </p></center-->
+                      </div>
+                      <div class="col-md-8" align="left">
+                        <p><b>Organizer:</b> {{ events.organizer }}<br /><b>Start time:</b> {{ events.starttime }}<br /><b>End time:</b> {{ events.endtime }}<br /><b>Location:</b><br />{{ events.location }}<br /><b>Brief Introduction:</b><br />{{ events.brief_intro }}</p>
+                      </div>
+                    </div>
+                </div>
+                {%endfor%}
+            {% else %}
+                 <div class="alert alert-info" role="alert"><center>No activities.</center></div>
+            {% endif %}
+            </div>              
+        </div>
+    {% else %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+      <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'users:index' %}">QuickActivity</a>
+      <a class="navbar-brand" href="{% url 'users:index' %}">Home</a>
+    <a class="navbar-brand" href="{% url 'search:topsearch' %}">Events</a>
+    <a class="navbar-brand" href="{% url 'events:post' %}">Post</a>
+    <a class="navbar-brand" href="{% url 'aboutus:aboutus' %}">About us</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+  {% if user.is_authenticated %}
+  <div>
+  <a class="navbar-right navbar-brand" href="{% url 'users:logout' %}">Logout</a>
+  <a class="navbar-right navbar-brand" href="{% url 'users:homepage' %}">Homepage</a>
+  <a class="navbar-right navbar-brand" href="{% url 'users:homepage' %}">Hi, {{user.username}}!</a>
+  </div>
+  {% else %}
+          <form class="navbar-form navbar-right" id="login_form" method="post" action="{% url 'users:login' %}" >
+  {% csrf_token %}
+            <div class="form-group">
+              <input placeholder="Username" name="username" class="form-control" type="text" required="required">
+            </div>
+            <div class="form-group">
+              <input placeholder="Password" name="password" class="form-control" type="password" required="required">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Register</button>
+          </form>
+  {% endif %}
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Register Now!</h4>
+      </div>
+      <div class="modal-body">
+        {% if messages %}
+          <div class="messages">
+          {% for message in messages %}
+          {% if message.tags == 'info' %}
+          <div class="alert alert-info" role="alert">{{ message }}</div>
+          {% endif %}
+          {% endfor %}
+          </div>
+        {% endif %}
+        <form id="user_form" method="post" action="{% url 'users:regist' %}" enctype="multipart/form-data">
+  {% csrf_token %}
+          <div class="form-group">
+            <label  class="control-label"><span>*</span>Username:</label>
+            <input type="text" name="username" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Email Address:</label>
+            <input type="email" name="email" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Password:</label>
+            <input type="password" name="password" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Confirm password:</label>
+            <input type="password" name="confirm_password" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Birthday:</label>
+            <input type="date" name="birthday" class="form-control" placeholder="mm/dd/yyyy or yyyy-mm-dd"size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label">Do you want to make your username public:</label>
+            <input type="checkbox" name="make_public_your_user_name" class="form-control">
+          </div>
+  <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Register</button>
+      </div>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    <div style="margin-top: 51px;">
+        <div class="alert alert-info" role="alert"><center><strong>Please login first.</strong></center></div>
+    </div>
+    {% endif %}
+
+    </div>
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="http://cmpt470.csil.sfu.ca:8006/~bichengx/static/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript"  src="http://cmpt470.csil.sfu.ca:8006/~bichengx/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	
+    </body>
+
+    <!-- FOOTER -->
+      <footer>
+      <div class="container">
+        <br> <br>
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p># Created by Group 6.</p>
+      </div>
+      </footer>
+</html>
+
+

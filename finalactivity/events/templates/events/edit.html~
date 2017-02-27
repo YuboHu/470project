@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    {% load staticfiles %}
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Edit Activity</title>
+
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+   <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}">
+
+    <!-- Optional theme -->
+   
+    <link rel="shortcut icon" href="http://eonasdan.github.io/bootstrap-datetimepicker/img/favicon.ico">
+    <!-- Optional theme -->
+    <link rel="stylesheet"  type="text/css" href="{% static "css/bootstrap-theme.min.css" %}">
+    <link href="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" type="text/css" rel="stylesheet">
+    <!-- Latest compiled and minified JavaScript -->
+   <script type="text/javascript" src="http://cmpt470.csil.sfu.ca:8006/~bichengx/static/js/jquery-2.1.1.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+   <script type="text/javascript"  src="http://momentjs.com/downloads/moment.min.js"></script>
+   <script type="text/javascript"  src="http://cmpt470.csil.sfu.ca:8006/~bichengx/static/js/analytics.js"></script>
+
+
+   <script type="text/javascript" src="http://cmpt470.csil.sfu.ca:8006/~bichengx/static/js/bootstrap-datetimepicker.js"></script>
+   <script type="text/javascript" src="http://cmpt470.csil.sfu.ca:8006/~bichengx/static/js/moment-with-locales.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+   <link  type="text/css"  href="{% static "css/carousel.css" %}" rel="stylesheet">
+   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css" />
+   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css" />
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+    function backhome()
+    {
+    window.location.assign("{% url 'users:index' %}")
+    }
+    function backposted()
+    {
+    window.location.assign("{% url 'users:posted' %}")
+    }
+    </script>
+    </head>
+
+    <body>
+	<script type="text/javascript">
+	  var gg={{ event.latitude }};
+	  var ff={{ event.longitude }};
+	</script>
+
+	{% if user.is_authenticated %}
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+      <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'users:index' %}">QuickActivity</a>
+    <a class="navbar-brand" href="{% url 'search:topsearch' %}">Events</a>
+    <a class="navbar-brand" href="{% url 'events:post' %}">Post</a>
+    <a class="navbar-brand" href="{% url 'aboutus:aboutus' %}">About us</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+  {% if user.is_authenticated %}
+  <div>
+  <a class="navbar-right navbar-brand" href="{% url 'users:logout' %}">Logout</a>
+  <a class="navbar-right navbar-brand" href="{% url 'users:homepage' %}">Homepage</a>
+  <a class="navbar-right navbar-brand" href="{% url 'users:homepage' %}">Hi, {{user.username}}!</a>
+  </div>
+  {% else %}
+          <form class="navbar-form navbar-right" id="login_form" method="post" action="{% url 'users:login' %}" >
+  {% csrf_token %}
+            <div class="form-group">
+              <input placeholder="Username" name="username" class="form-control" type="text" required="required">
+            </div>
+            <div class="form-group">
+              <input placeholder="Password" name="password" class="form-control" type="password" required="required">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Register</button>
+          </form>
+  {% endif %}
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Register Now!</h4>
+      </div>
+      <div class="modal-body">
+        {% if messages %}
+          <div class="messages">
+          {% for message in messages %}
+          {% if message.tags == 'info' %}
+          <div class="alert alert-info" role="alert">{{ message }}</div>
+          {% endif %}
+          {% endfor %}
+          </div>
+        {% endif %}
+        <form id="user_form" method="post" action="{% url 'users:regist' %}" enctype="multipart/form-data">
+  {% csrf_token %}
+          <div class="form-group">
+            <label  class="control-label"><span>*</span>Username:</label>
+            <input type="text" name="username" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Email Address:</label>
+            <input type="email" name="email" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Password:</label>
+            <input type="password" name="password" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Confirm password:</label>
+            <input type="password" name="confirm_password" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Birthday:</label>
+            <input type="date" name="birthday" class="form-control" placeholder="mm/dd/yyyy or yyyy-mm-dd"size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label">Do you want to make your username public:</label>
+            <input type="checkbox" name="make_public_your_user_name" class="form-control">
+          </div>
+  <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Register</button>
+      </div>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+    <div class="container" style="margin-top: 60px;">
+        <div class="row">
+            <div class="col-sm-3 blog-sidebar">
+                <ul class="nav nav-pills nav-stacked">
+                <li role="presentation"><a href="{% url 'users:homepage' %}" >Homepage</a></li>
+                <li role="presentation"><a href="{% url 'users:detail' %}">Profile</a></li>
+                <li role="presentation"><a href="{% url 'users:chapass' %}">Change Password</a></li>
+                <li role="presentation" class="active"><a href="{% url 'users:posted' %}">Posted Events</a></li>
+                <li role="presentation"><a href="{% url 'users:engaged' %}">Joined Events</a></li>
+                <li role="presentation"><a href="{% url 'users:favorite' %}">Favorite Events</a></li>
+
+                </ul>
+            </div> 
+
+            <div class="col-xs-8 blog-main" align="left">
+              {% if permission %}
+                {% if edited %}
+                <script>backposted()</script>
+                {% else %}
+                <center><h3>Edit Activity</h3></center>
+                
+                <form id="post_form" method="post" action="{% url 'events:edit' event.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <table class="table table-striped">
+                    <tr>
+                        <td><span>*</span>Title</td>
+                        <td><input type="text" name="title" value="{{ event.title }}" size="50" class="form-control" required="required"/></td>
+                     </tr>
+
+                     <tr>
+                        <td><span>*</span>Organizer</td>
+                        <td><input type="text" name="organizer" value="{{ event.organizer }}" size="50" class="form-control" required="required"/></td>
+                     </tr>
+
+                     <tr>
+                        <td><span>*</span>Brief Description</td>
+                        <td><textarea type="text" name="brief_intro"  value="{{ event.brief_intro }}" rows="2" size="50" class="form-control" required="required"/>{{ event.brief_intro }}</textarea></td>
+                     </tr>
+
+                     <tr>
+                        <td><span>*</span>Starttime</td>
+                        <td><div class="input-group date" id="datetimepicker1">
+                                <input type="text" name="starttime" size="50" class="form-control" value="{{ event.starttime|date:"Y-m-d H:i:s" }}" required="required"/> 
+                                <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </span>
+                        </td>
+                     </tr>
+
+                     <tr>
+                        <td>Endtime</td>
+                        
+                         <td><div class="input-group date" id="datetimepicker2">
+                                <input type="text" name="endtime" size="50" class="form-control" value="{{ event.endtime|date:"Y-m-d H:i:s" }}" required="required"/> 
+                                <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </span>
+                        </td>
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker1').datetimepicker({
+        format:'YYYY-MM-DD hh:mm:ss',
+        viewMode: 'years'
+        });
+        $('#datetimepicker2').datetimepicker({
+            useCurrent: false, //Important! See issue #1075
+      format:'YYYY-MM-DD hh:mm:ss',
+      viewMode: 'years'
+        });
+        $("#datetimepicker1").on("dp.change", function (e) {
+            $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datetimepicker2").on("dp.change", function (e) {
+            $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+        });
+    });
+</script>
+                     </tr>
+
+                     <tr>
+                        <td><span>*</span>Contact Email</td>
+                        <td><input type="email" name="contact_email" value="{{ event.contact_email }}" size="50" class="form-control" required="required"/></td>
+                     </tr>
+
+                     <tr>
+                        <td><span>*</span>Contact Phonenumber</td>
+                        <td><input type="tel" name="contact_phonenumber" value="{{ event.contact_phonenumber }}" size="50" class="form-control" required="required"/></td>
+                     </tr>
+
+                     <tr>
+                        <td><span>*</span>Capacity</td>
+                        <td><input type="number" name="capacity" value="{{ event.capacity }}" size="50" class="form-control" required="required"/></td>
+                     </tr>
+
+                     <tr>
+                        <td><span>*</span>Minimum Age Requirement</td>
+                        <td><input type="number" name="age_limit" value="{{ event.age_limit }}" size="50" class="form-control" required="required"/></td>
+                     </tr>
+
+                     <tr>
+                        <td>Ticket Link</td>
+                        <td><input type="url" name="ticket" value="{{ event.ticket }}" size="50" class="form-control" ></td>
+                     </tr>
+
+                     <tr>
+                        <td><span>*</span>Location</td>
+                        <td><iframe src="{% url 'events:cmap' %}" width="100%" height="280"></iframe></td>
+                     </tr>
+
+                     <tr>
+                        <td><span>*</span>Address</td>
+                        <td><input type="text" id="location_" name="location_" value="{{ event.location }}" size="50" class="form-control" required="required"/></td>
+                     </tr>
+
+                     <tr>
+                        <td>Street Number</td>
+                        <td><input type="text" id="street_number_" name="street_number_" value="{{ event.street_number }}" size="50" class="form-control"/></td>
+                     </tr>
+
+                     <tr>
+                        <td>Street Name</td>
+                        <td><input type="text" id="street_name_" name="street_name_" value="{{ event.street_name }}" size="50" class="form-control"/></td>
+                     </tr>
+
+                     <tr>
+                        <td>City Name</td>
+                        <td><input type="text" id="city_name_" name="city_name_" value="{{ event.city_name }}" size="50" class="form-control"/></td>
+                     </tr>
+
+                     <tr>
+                        <td>Province Name</td>
+                        <td><input type="text" id="province_name_" name="province_name_" value="{{ event.province_name }}" size="50" class="form-control"/></td>
+                     </tr>
+
+                     <tr>
+                        <td>Country Name</td>
+                        <td><input type="text" id="country_name_" name="country_name_" value="{{ event.country_name }}" size="50" class="form-control"/></td>
+                     </tr>
+
+                     <tr>
+                        <td>Postal Code</td>
+                        <td><input type="text" id="postal_code_" name="postal_code_" value="{{ event.postal_code }}" size="50" class="form-control"/></td>
+                     </tr>
+
+                     <tr>
+                        <td>Latitude</td>
+                        <td><input type="text" id="latitude_" name="latitude_" value="{{ event.latitude }}" size="50" class="form-control"/></td>
+                     </tr>
+
+                     <tr>
+                        <td>Longitude</td>
+                        <td><input type="text" id="longitude_" name="longitude_" value="{{ event.longitude }}" size="50" class="form-control"/></td>
+                     </tr>
+
+                     <tr>
+                        <td><span>*</span>Detailed Description</td>
+                        <td><textarea type="text" name="description" value="{{ event.description }}" rows="6" class="form-control" required="required">{{ event.description }}</textarea></td>
+                     </tr>  
+
+                     <tr>
+                        <td><span>*</span>Category</td>
+                        <td>
+                            <div class="checkbox"><label><input type="checkbox" name="isMusic" {% if event.music %} checked {% endif %} /> Music</label></div>
+            				<div class="checkbox"><label><input type="checkbox" name="isSport" {% if event.sports %} checked {% endif %} /> Sports</label></div>
+            				<div class="checkbox"><label><input type="checkbox" name="isFood" {% if event.food %} checked {% endif %} /> Food&Drink</label></div>
+            				<div class="checkbox"><label><input type="checkbox" name="isParties_" {% if event.party %} checked {% endif %} /> Party</label></div>
+            				<div class="checkbox"><label><input type="checkbox" name="isArts" {% if event.arts %} checked {% endif %} /> Arts</label></div>
+            				<div class="checkbox"><label><input type="checkbox" name="isBusiness" {% if event.business %} checked {% endif %} /> Business</label></div>
+                        </td>
+                     </tr>   
+
+                      <tr>
+                        <td><span>*</span>Poster</td>
+                        <td>
+                            {%if event.poster %}
+                             <img src="/final/{{ event.poster.url }}" width="100%" height="253">
+                            {%endif%}
+                            <input type="file" name="poster"/>
+                        </td>
+                     </tr>                   
+                </table>
+                <div align="center"><button type="submit" class="btn btn-info"/>Submit</button></div>
+                </form>
+                {% endif %}
+                <br />
+              {%else%}
+                <div class="alert alert-danger" role="alert"><center><strong>You can not edit this event!</strong></center></div>
+                <script>backposted()</script>
+              {%endif%}
+            </div>
+            </div>              
+        </div>
+    {% else %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+      <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'users:index' %}">QuickActivity</a>
+      <a class="navbar-brand" href="{% url 'users:index' %}">Home</a>
+    <a class="navbar-brand" href="{% url 'search:topsearch' %}">Events</a>
+    <a class="navbar-brand" href="{% url 'events:post' %}">Post</a>
+    <a class="navbar-brand" href="{% url 'aboutus:aboutus' %}">About us</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+  {% if user.is_authenticated %}
+  <div>
+  <a class="navbar-right navbar-brand" href="{% url 'users:logout' %}">Logout</a>
+  <a class="navbar-right navbar-brand" href="{% url 'users:homepage' %}">Homepage</a>
+  <a class="navbar-right navbar-brand" href="{% url 'users:homepage' %}">Hi, {{user.username}}!</a>
+  </div>
+  {% else %}
+          <form class="navbar-form navbar-right" id="login_form" method="post" action="{% url 'users:login' %}" >
+  {% csrf_token %}
+            <div class="form-group">
+              <input placeholder="Username" name="username" class="form-control" type="text" required="required">
+            </div>
+            <div class="form-group">
+              <input placeholder="Password" name="password" class="form-control" type="password" required="required">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Register</button>
+          </form>
+  {% endif %}
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Register Now!</h4>
+      </div>
+      <div class="modal-body">
+        {% if messages %}
+          <div class="messages">
+          {% for message in messages %}
+          {% if message.tags == 'info' %}
+          <div class="alert alert-info" role="alert">{{ message }}</div>
+          {% endif %}
+          {% endfor %}
+          </div>
+        {% endif %}
+        <form id="user_form" method="post" action="{% url 'users:regist' %}" enctype="multipart/form-data">
+  {% csrf_token %}
+          <div class="form-group">
+            <label  class="control-label"><span>*</span>Username:</label>
+            <input type="text" name="username" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Email Address:</label>
+            <input type="email" name="email" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Password:</label>
+            <input type="password" name="password" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Confirm password:</label>
+            <input type="password" name="confirm_password" class="form-control" size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label"><span>*</span>Birthday:</label>
+            <input type="date" name="birthday" class="form-control" placeholder="mm/dd/yyyy or yyyy-mm-dd"size="30" required="required">
+          </div>
+          <div class="form-group">
+            <label class="control-label">Do you want to make your username public:</label>
+            <input type="checkbox" name="make_public_your_user_name" class="form-control">
+          </div>
+  <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Register</button>
+      </div>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    <div style="margin-top: 51px;">
+        <div class="alert alert-info" role="alert"><center><strong>Please login first.</strong></center></div>
+    </div>
+    {% endif %}
+ 
+       <!--script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+           <script type="text/javascript" src="../../../static/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript"  src="../../../static/js/bootstrap-datepicker.js"></script>
+       <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script-->
+ 
+    </body>
+
+    <!-- FOOTER -->
+      <footer>
+      <div class="container">
+        <br> <br>
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p># Created by Group 6.</p>
+      </div>
+      </footer>
+</html>

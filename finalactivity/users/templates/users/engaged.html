@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    {% load staticfiles %}
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Joined Activities</title>
+    <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap-theme.min.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "css/blog.css" %}">
+
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    </head>
+
+    <body>
+    {% if user.is_authenticated %}
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+      <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'users:index' %}">QuickActivity</a>
+	  <a class="navbar-brand" href="{% url 'search:topsearch' %}">Events</a>
+	  <a class="navbar-brand" href="{% url 'events:post' %}">Post</a>
+	  <a class="navbar-brand" href="{% url 'aboutus:aboutus' %}">About us</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+	{% if user.is_authenticated %}
+	<div>
+	<a class="navbar-right navbar-brand" href="{% url 'users:logout' %}">Logout</a>
+	<a class="navbar-right navbar-brand" href="{% url 'users:homepage' %}">Homepage</a>
+	<a class="navbar-right navbar-brand" href="{% url 'users:homepage' %}">Hi, {{user.username}}!</a>
+	</div>
+	{% else %}
+          <form class="navbar-form navbar-right" id="login_form" method="post" action="{% url 'users:login' %}" >
+	{% csrf_token %}
+            <div class="form-group">
+              <input placeholder="Username" name="username" class="form-control" type="text" required="required">
+            </div>
+            <div class="form-group">
+              <input placeholder="Password" name="password" class="form-control" type="password" required="required">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+	    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Register</button>
+          </form>
+	{% endif %}
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+
+    <div class="container" style="margin-top: 60px;">
+        <div class="row">
+            <div class="col-sm-3 blog-sidebar" align="left">
+                <ul class="nav nav-pills nav-stacked">
+                <li role="presentation"><a href="{% url 'users:homepage' %}">Homepage</a></li>
+                <li role="presentation"><a href="{% url 'users:detail' %}">Profile</a></li>
+                <li role="presentation"><a href="{% url 'users:chapass' %}">Change Password</a></li>
+                <li role="presentation"><a href="{% url 'users:posted' %}">Posted Activities</a></li>
+                <li role="presentation" class="active"><a href="{% url 'users:engaged' %}">Joined Activities</a></li>
+                <li role="presentation"><a href="{% url 'users:favorite' %}">Favorite Activities</a></li>
+
+                </ul>
+            </div> 
+
+            <div class="col-xs-8 blog-main" align="left">
+<ul class="nav nav-tabs">
+  <li role="presentation" class="disabled"><a href="#">In List</a></li>
+  <li role="presentation"><a href="{% url 'users:engaged2' %}">In Calendar</a></li>
+</ul>
+            {% if events_list %}
+                {% for events in events_list %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><a href="{% url 'events:detail' events.id %}">{{ events.title }}</a></h3>
+                    </div>
+                    <div class="panel-body">
+                      <div class="col-xs-4" align="left">
+                        {%if events.poster %}
+                         <img src="/final/{{ events.poster.url }}" height="180" width="180">
+                        {%endif%}
+                      </div>
+                      <div class="col-xs-8" align="left">
+                        <p><b>Organizer:</b> {{ events.organizer }}<br /><b>Start time:</b> {{ events.starttime }}<br /><b>End time:</b> {{ events.endtime }}<br /><b>Location:</b><br />{{ events.location }}<br /><b>Brief Introduction:</b><br />{{ events.brief_intro }}</p>
+                      </div>
+                    </div>
+                </div>
+                {%endfor%}
+
+            {% else %}
+                 <div class="alert alert-info" role="alert"><center>No activities.</center></div>
+            {% endif %}
+            </div>              
+        </div>
+    {% else %}
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+      <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'users:index' %}">QuickActivity</a>
+	  <a class="navbar-brand" href="{% url 'search:topsearch' %}">Events</a>
+	  <a class="navbar-brand" href="{% url 'events:post' %}">Post</a>
+	  <a class="navbar-brand" href="{% url 'aboutus:aboutus' %}">About us</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+	{% if user.is_authenticated %}
+	<div>
+	<a class="navbar-right navbar-brand" href="{% url 'users:logout' %}">Logout</a>
+	<a class="navbar-right navbar-brand" href="{% url 'users:homepage' %}">Homepage</a>
+	<a class="navbar-right navbar-brand" href="{% url 'users:homepage' %}">Hi, {{user.username}}!</a>
+	</div>
+	{% else %}
+          <form class="navbar-form navbar-right" id="login_form" method="post" action="{% url 'users:login' %}" >
+	{% csrf_token %}
+            <div class="form-group">
+              <input placeholder="Username" name="username" class="form-control" type="text" required="required">
+            </div>
+            <div class="form-group">
+              <input placeholder="Password" name="password" class="form-control" type="password" required="required">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+	    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Register</button>
+          </form>
+	{% endif %}
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+    <div style="margin-top: 51px;">
+        <div class="alert alert-info" role="alert"><center><strong>Please login first.</strong></center></div>
+    </div>
+    {% endif %}
+
+    </div>
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    </body>
+
+    <!-- FOOTER -->
+      <footer>
+      <div class="container">
+        <br> <br>
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p># Created by Group 6.</p>
+      </div>
+      </footer>
+</html>
+
+
