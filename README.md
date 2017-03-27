@@ -1,2 +1,4 @@
 # 470project
-This is a eventposting website using django framework
+Quick Activity
+
+A django-based website for posting and joining public/private events.
